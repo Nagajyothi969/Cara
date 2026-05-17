@@ -1,48 +1,98 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('registerForm');
-    form.addEventListener('submit', function (e) {
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Particles Background
+    particlesJS("particles-js", {
+        particles: {
+            number: {
+                value: 70
+            },
+            color: {
+                value: "#00d4ff"
+            },
+            shape: {
+                type: "circle"
+            },
+            opacity: {
+                value: 0.5
+            },
+            size: {
+                value: 3
+            },
+            move: {
+                enable: true,
+                speed: 2
+            },
+            line_linked: {
+                enable: true,
+                color: "#00d4ff",
+                opacity: 0.3
+            }
+        }
+    });
+
+    // Register Form
+    const form = document.getElementById("registerForm");
+
+    form.addEventListener("submit", (e) => {
+
         e.preventDefault();
-        const name = document.getElementById('registerUsername').value.trim();
-        const email = document.getElementById('registerEmail').value.trim();
-        const password = document.getElementById('registerPassword').value;
 
-       if (!name || !email || !password) {
-    alert('Please fill all fields.');
-    return;
-}
+        const username = document
+            .getElementById("registerUsername")
+            .value
+            .trim();
 
-// Password validation
-const passwordRegex =
-/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+        const email = document
+            .getElementById("registerEmail")
+            .value
+            .trim();
 
-if (!passwordRegex.test(password)) {
+        const password = document
+            .getElementById("registerPassword")
+            .value;
 
-    alert(
-        'Password must contain:\n' +
-        '- Minimum 8 characters\n' +
-        '- One uppercase letter\n' +
-        '- One lowercase letter\n' +
-        '- One number\n' +
-        '- One special character'
-    );
+        const confirmPassword = document
+            .getElementById("registerConfirmPassword")
+            .value;
 
-    return;
-}
-
-        let users = JSON.parse(localStorage.getItem('users') || '[]');
-        if (users.find(u => u.email === email)) {
-            alert('Email already registered.');
+        // Validation
+        if (!username || !email || !password || !confirmPassword) {
+            alert("Please fill all fields");
             return;
         }
-        if (users.find(u => u.name.toLowerCase() === name.toLowerCase())) {
-        alert('Username already exists.');
-        return;
+
+        if (password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
         }
-        users.push({ name, email, password });
-        localStorage.setItem('users', JSON.stringify(users));
-        // On successful registration
-        alert('Signup successful! You are now logged in.');
-        localStorage.setItem('loggedInUser', email);
-        window.location.href = 'index.html';
+
+        // Existing users
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+
+        const existingUser = users.find(user => user.email === email);
+
+        if (existingUser) {
+            alert("Email already registered");
+            return;
+        }
+
+        // Save user
+        users.push({
+            username,
+            email,
+            password
+        });
+
+        localStorage.setItem("users", JSON.stringify(users));
+
+        // Login session
+        localStorage.setItem("loggedInUser", email);
+
+        alert("Registration Successful!");
+
+        // Redirect
+        window.location.href = "index.html";
+
     });
+
 });
